@@ -8,34 +8,31 @@ from rgb2gray import rgb2gray_avge
 import sys
 import os
 
-def imhist(img, *args, **kwargs):
-  """
-  Calculate the histogram of a grayscale image
+def img2uint8(img):
+    '''
+    Convert image to 8-bit format [0, 255].
+    '''
 
-  Parameters
-  ----------------
-  img : The function receives a grayscale image of N * M dimensions
+    vmin = img.min()
+    vmax = img.max()
 
-  Returns
-  ----------------
-  H : The function returns the array with the image histogram values on a scale
-  from 0 to 255 and plots the histogram
-  """
+    img = ((img - vmin) / (vmax - vmin)) * 255.0
 
-  if len(img.shape) > 2:
-    raise ValueError('The image is not in grayscale')
-  else:
-    tmp = np.uint8(img)
-    H = np.zeros((255, 1))
+    return np.uint8(img)
 
-    for i in range(img.shape[0]):
-      for j in range(img.shape[1]):
-        K = tmp[i, j]
-        H[K] += 1
+def plothist(h, color='k'):
+    '''
+    Show histogram of an image.
+    Parameters
+    ----------
+    h : Array with a size (255, 1) that contains the intensity values of the
+        pixels of the grayscale image.
+    color : Color to display the histogram e.g. 'r'
+    '''
 
     fig, ax = plt.subplots(1, 1)
-    ax.set_title(*args, **kwargs)
-    ax.stem(H, linefmt = 'k-', markerfmt = 'none', basefmt = 'k-', use_line_collection=True)
+
+    ax.stem(h, linefmt = '{}-'.format(color), markerfmt = 'none', basefmt = 'k-', use_line_collection=True)
     ax.set_xlim(0, 255)
     ax.grid('on')
     ax.set_xticklabels([])
@@ -46,15 +43,45 @@ def imhist(img, *args, **kwargs):
     sm.set_array([])
 
     fig.colorbar(sm, orientation='horizontal')
-    fig.show()
+    plt.show()
 
-def main():
-    abspath = os.getcwd()
-    sys.path.append(abspath)
-    img_path = '/examples/Lenna.png'
-    img = mpimg.imread(abspath + img_path)
+def hist(img):
+    '''
+    Get array of pixel intensity values in a grayscale image.
+    img : Image in grayscale.
+    '''
 
-    imhist(rgb2gray_avge(img), label='Histogram')
+    if len(img.shape) > 2:
+        raise ValueError('Image not in grayscale')
+
+    h = np.zeros((256, 1))
+
+    for m in range(img.shape[0]):
+        for n in range(img.shape[1]):
+            h[img[m, n]] += 1
+
+    return h
+
+def cumhist(img):
+    '''
+    Get cumulative histogram of grayscale image.
+    '''
+
+    h = hist(img)
+
+    for i in range(1, len(h)):
+        h[i] += h[i - 1]
+
+    return h
 
 if __name__ == '__main__':
-    main()
+    abspath = os.getcwd()
+    sys.path.append(abspath)
+    img_path = '/images/Lenna.png'
+    img = mpimg.imread(abspath + img_path)
+
+    if img.dtype != np.uint8:
+        img = img2uint8(img)
+
+    histvals = hist(rgb2gray_avge(img))
+    plothist(histvals, color='k')
