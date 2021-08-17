@@ -74,14 +74,17 @@ def cumhist(img):
 
     return h
 
-if __name__ == '__main__':
-    abspath = os.getcwd()
-    sys.path.append(abspath)
-    img_path = '/images/Lenna.png'
-    img = mpimg.imread(abspath + img_path)
+def imread(str):
+    img = mpimg.imread(str)
 
     if img.dtype != np.uint8:
         img = img2uint8(img)
+
+    return img
+
+if __name__ == '__main__':
+    
+    img = imread('./images/Lenna.png')
 
     histvals = hist(rgb2gray_avge(img))
     plothist(histvals, color='k')
