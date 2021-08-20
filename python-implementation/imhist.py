@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import matplotlib.image as mpimg
-from rgb2gray import rgb2gray_avge
+from rgb2gray import *
 import sys
 import os
 
@@ -83,8 +83,8 @@ def imread(str):
     return img
 
 if __name__ == '__main__':
-    
+
     img = imread('./images/Lenna.png')
 
-    histvals = hist(rgb2gray_avge(img))
+    histvals = hist(grayaverage(img))
     plothist(histvals, color='k')

@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import matplotlib.image as mpimg
-from rgb2gray import rgb2gray_avge
+from rgb2gray import *
 
 def img2uint8(img):
     '''
@@ -41,6 +41,6 @@ if __name__ == '__main__':
     if img.dtype != np.uint8:
         img = img2uint8(img)
 
-    imgbw = im2bw(rgb2gray_avge(img), 120)
+    imgbw = im2bw(grayaverage(img), 120)
     plt.imshow(imgbw, cmap='gray')
     plt.show()
